@@ -1,0 +1,12 @@
+import { Router } from "express";
+import { generate, listOutfits, getOutfit, toggleFavorite, removeOutfit } from "../controllers/outfitController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+const router = Router();
+router.use(protect);
+router.post("/generate", asyncHandler(generate));
+router.get("/", asyncHandler(listOutfits));
+router.get("/:id", asyncHandler(getOutfit));
+router.post("/:id/favorite", asyncHandler(toggleFavorite));
+router.delete("/:id", asyncHandler(removeOutfit));
+export default router;

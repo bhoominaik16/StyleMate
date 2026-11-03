@@ -1,0 +1,28 @@
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import authRoutes from "./routes/authRoutes.js";
+import wardrobeRoutes from "./routes/wardrobeRoutes.js";
+import outfitRoutes from "./routes/outfitRoutes.js";
+import plannerRoutes from "./routes/plannerRoutes.js";
+import favoriteRoutes from "./routes/favoriteRoutes.js";
+import assistantRoutes from "./routes/assistantRoutes.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+
+const app = express();
+app.use(helmet());
+app.use(cors({ origin: process.env.CLIENT_URL?.split(",") || "http://localhost:5173" }));
+app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 180, standardHeaders: true, legacyHeaders: false }));
+app.get("/api/health", (_req, res) => res.json({ status: "ok", app: "StyleMate API" }));
+app.use("/api/auth", authRoutes);
+app.use("/api/wardrobe", wardrobeRoutes);
+app.use("/api/outfits", outfitRoutes);
+app.use("/api/planner", plannerRoutes);
+app.use("/api/favorites", favoriteRoutes);
+app.use("/api/assistant", assistantRoutes);
+app.use(notFound);
+app.use(errorHandler);
+export default app;

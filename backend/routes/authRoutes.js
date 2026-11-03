@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { register, login, profile, updateProfile } from "../controllers/authController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+const router = Router();
+router.post("/register", asyncHandler(register));
+router.post("/login", asyncHandler(login));
+router.get("/profile", protect, asyncHandler(profile));
+router.put("/profile", protect, asyncHandler(updateProfile));
+export default router;

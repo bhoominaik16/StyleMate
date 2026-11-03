@@ -1,0 +1,11 @@
+import { Router } from "express";
+import { listPlans, createPlan, updatePlan, deletePlan } from "../controllers/plannerController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+const router = Router();
+router.use(protect);
+router.get("/", asyncHandler(listPlans));
+router.post("/", asyncHandler(createPlan));
+router.put("/:id", asyncHandler(updatePlan));
+router.delete("/:id", asyncHandler(deletePlan));
+export default router;

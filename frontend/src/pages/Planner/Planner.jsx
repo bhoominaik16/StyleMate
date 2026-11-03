@@ -1,0 +1,12 @@
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import api from "../../services/api";
+import { getErrorMessage } from "../../services/api";
+export default function Planner(){
+ const [plans,setPlans]=useState([]);const [outfits,setOutfits]=useState([]);const [date,setDate]=useState(new Date().toISOString().slice(0,10));const [outfitId,setOutfitId]=useState("");
+ const load=()=>api.get("/planner").then(r=>setPlans(r.data.plans)).catch(e=>toast.error(getErrorMessage(e)));
+ useEffect(()=>{load();api.get("/outfits").then(r=>setOutfits(r.data.outfits)).catch(()=>{});},[]);
+ const add=async e=>{e.preventDefault();try{await api.post("/planner",{date,outfitId});load();toast.success("Outfit added to your planner.");}catch(e){toast.error(getErrorMessage(e));}};
+ const remove=async id=>{try{await api.delete(`/planner/${id}`);load();}catch(e){toast.error(getErrorMessage(e));}};
+ return <div className="mx-auto max-w-5xl"><h1 className="text-3xl font-semibold">Weekly outfit planner</h1><p className="mt-2 text-stone-500">Plan your looks ahead and make mornings easier.</p><form onSubmit={add} className="mt-6 grid gap-3 rounded-2xl border border-stone-200 bg-white p-5 sm:grid-cols-[1fr_2fr_auto]"><label className="text-sm">Date<input required type="date" value={date} onChange={e=>setDate(e.target.value)} className="mt-1 block w-full rounded-lg border border-stone-200 p-2"/></label><label className="text-sm">Outfit<select required value={outfitId} onChange={e=>setOutfitId(e.target.value)} className="mt-1 block w-full rounded-lg border border-stone-200 p-2"><option value="">Choose an outfit</option>{outfits.map(o=><option key={o._id} value={o._id}>{o.name} — {o.occasion}</option>)}</select></label><button className="self-end rounded-xl bg-rose-700 px-5 py-2.5 text-white">Add plan</button></form><div className="mt-6 space-y-3">{plans.map(p=><div key={p._id} className="flex items-center justify-between rounded-xl border border-stone-200 bg-white p-4"><div><p className="text-sm font-semibold">{new Date(p.date).toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"short"})}</p><p className="mt-1 text-sm text-stone-500">{p.outfitId?.name || "Outfit"} · {p.outfitId?.occasion}</p></div><button onClick={()=>remove(p._id)} className="text-sm text-rose-700">Remove</button></div>)}{!plans.length&&<p className="rounded-xl bg-white p-8 text-center text-sm text-stone-500">No outfits planned yet.</p>}</div></div>;
+}

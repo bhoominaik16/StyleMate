@@ -1,0 +1,14 @@
+import { Router } from "express";
+import { analyze, createClothing, listClothing, getClothing, updateClothing, removeClothing } from "../controllers/wardrobeController.js";
+import { protect } from "../middleware/authMiddleware.js";
+import { upload } from "../middleware/uploadMiddleware.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+const router = Router();
+router.use(protect);
+router.post("/analyze", upload.single("image"), asyncHandler(analyze));
+router.post("/", upload.single("image"), asyncHandler(createClothing));
+router.get("/", asyncHandler(listClothing));
+router.get("/:id", asyncHandler(getClothing));
+router.put("/:id", asyncHandler(updateClothing));
+router.delete("/:id", asyncHandler(removeClothing));
+export default router;
