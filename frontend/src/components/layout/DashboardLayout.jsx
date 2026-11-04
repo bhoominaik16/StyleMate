@@ -6,7 +6,6 @@ const links = [
   ["/dashboard", "Overview", LayoutDashboard],
   ["/wardrobe", "My wardrobe", Shirt],
   ["/generate", "Outfit generator", Sparkles],
-  ["/occasion", "By occasion", WandSparkles],
   ["/planner", "Weekly planner", CalendarDays],
   ["/favorites", "Favorites", Heart],
   ["/assistant", "AI stylist", MessageCircle],
